@@ -32,7 +32,7 @@ public class boj6588_sieve {
     private static String findSumNum(boolean[] numberList, int inputNum) {
         for (int i = 2; i <= inputNum / 2; i++) {
             if (numberList[i] && numberList[inputNum - i]) {
-                return String.format("%d = %d + %d", inputNum, i, inputNum - i);
+                return inputNum + " = " + i + " + " + (inputNum - i);
             }
         }
 
