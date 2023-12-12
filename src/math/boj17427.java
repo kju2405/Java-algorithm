@@ -1,3 +1,5 @@
+package math;
+
 import java.io.*;
 
 public class boj17427 {
