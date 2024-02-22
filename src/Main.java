@@ -2,33 +2,33 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int N, M;
-    static int[] inputNums;
-    static int[] resultArr;
-    static Set<String> result;
-    public static void main(String[] args) throws IOException{
+    static int N;
+    static int[] arr;
+    static int[] result;
+    static boolean[] isUsed;
+
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
+        while (true) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            N = Integer.parseInt(st.nextToken());
 
-        inputNums = new int[N];
-        resultArr = new int[M];
-        result = new LinkedHashSet<>();
+            if (N == 0) {
+                break;
+            }
 
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < N; i++) {
-            inputNums[i] = Integer.parseInt(st.nextToken());
-        }
+            arr = new int[N];
+            result = new int[6];
+            isUsed = new boolean[N];
 
-        Arrays.sort(inputNums);
+            for (int i = 0; i < N; i++) {
+                arr[i] = Integer.parseInt(st.nextToken());
+            }
 
-        func(0, 0);
-
-        for (String val : result) {
-            bw.write(val);
+            func(0, 0);
             bw.newLine();
         }
 
@@ -36,19 +36,22 @@ public class Main {
         bw.close();
     }
 
-    private static void func(int idx, int start) {
-        if (idx == M) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < M; i++) {
-                sb.append(resultArr[i] + " ");
+    private static void func(int idx, int start) throws IOException {
+        if (idx == result.length) {
+            for (int i = 0; i < result.length; i++) {
+                bw.write(result[i] + " ");
             }
-            result.add(sb.toString());
+            bw.newLine();
             return;
         }
 
-        for (int i = start; i < N; i++) {
-            resultArr[idx] = inputNums[i];
-            func(idx + 1, i);
+        for (int i = start; i < arr.length; i++) {
+            if (!isUsed[i]) {
+                result[idx] = arr[i];
+                isUsed[i] = true;
+                func(idx + 1, i + 1);
+                isUsed[i] = false;
+            }
         }
     }
 }
