@@ -1,11 +1,13 @@
+package bfs;
+
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class Boj1600 {
     static int K;
     static int W, H;
     static int[][] board;
-    static int[][] dist;
+    static int[][][] dist;
     static Queue<Pair> queue;
     static int[] dx = {1, 0, -1, 0};
     static int[] dy = {0, 1, 0, -1};
@@ -23,7 +25,7 @@ public class Main {
         H = Integer.parseInt(st.nextToken());
 
         board = new int[H][W];
-        dist = new int[H][W];
+        dist = new int[K + 1][H][W];
 
         for (int i = 0; i < H; i++) {
             st = new StringTokenizer(br.readLine());
@@ -32,26 +34,32 @@ public class Main {
             }
         }
 
-        for (int i = 0; i < H; i++) {
-            Arrays.fill(dist[i], -1);
+        for (int i = 0; i < K + 1; i++) {
+            for (int j = 0; j < H; j++) {
+                Arrays.fill(dist[i][j], -1);
+            }
         }
 
-        dist[0][0] = 0;
+        dist[0][0][0] = 0;
 
-        bfs();
+        int answer = bfs();
 
-        bw.write(String.valueOf(dist[H - 1][W - 1]));
+        bw.write(String.valueOf(answer));
 
         br.close();
         bw.close();
     }
 
-    private static void bfs() {
+    private static int bfs() {
         queue = new LinkedList<>();
         queue.offer(new Pair(0, 0, 0));
 
         while (!queue.isEmpty()) {
             Pair cur = queue.poll();
+
+            if (cur.x == H - 1 && cur.y == W - 1) {
+                return dist[cur.horse][cur.x][cur.y];
+            }
 
             for (int i = 0; i < dx.length; i++) {
                 int nx = cur.x + dx[i];
@@ -65,8 +73,8 @@ public class Main {
                     continue;
                 }
 
-                if (dist[nx][ny] == -1 || dist[nx][ny] > dist[cur.x][cur.y] + 1) {
-                    dist[nx][ny] = dist[cur.x][cur.y] + 1;
+                if (dist[cur.horse][nx][ny] == -1) {
+                    dist[cur.horse][nx][ny] = dist[cur.horse][cur.x][cur.y] + 1;
                     queue.offer(new Pair(nx, ny, cur.horse));
                 }
             }
@@ -87,12 +95,13 @@ public class Main {
                     continue;
                 }
 
-                if (dist[nx][ny] == -1 || dist[nx][ny] > dist[cur.x][cur.y] + 1) {
-                    dist[nx][ny] = dist[cur.x][cur.y] + 1;
+                if (dist[cur.horse + 1][nx][ny] == -1) {
+                    dist[cur.horse + 1][nx][ny] = dist[cur.horse][cur.x][cur.y] + 1;
                     queue.offer(new Pair(nx, ny, cur.horse + 1));
                 }
             }
         }
+        return -1;
     }
 
     static class Pair {
