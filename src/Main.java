@@ -2,40 +2,42 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int N;
-    static int[] dp;
+    static boolean[] arr;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        N = Integer.parseInt(br.readLine());
-        dp = new int[1000001];
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        dp[2] = 1;
-        dp[3] = 1;
+        int from = Integer.parseInt(st.nextToken());
+        int to = Integer.parseInt(st.nextToken());
 
-        for (int i = 4; i <= N; i++) {
-            int num1 = Integer.MAX_VALUE;
-            int num2 = Integer.MAX_VALUE;
-            int num3 = Integer.MAX_VALUE;
+        arr = new boolean[to + 1];
+        Arrays.fill(arr, true);
 
-            if (i % 2 == 0) {
-                num1 = dp[i / 2] + 1;
+        arr[1] = false;
+
+        for (int i = 2; i * i <= to; i++) {
+            if (!arr[i]) {
+                continue;
             }
 
-            if (i % 3 == 0) {
-                num2 = dp[i / 3] + 1;
+            for (int j = 2 * i; j <= to; j += i) {
+                arr[j] = false;
             }
-
-            num3 = dp[i - 1] + 1;
-
-            dp[i] = Math.min(Math.min(num1, num2), num3);
         }
 
-        bw.write(String.valueOf(dp[N]));
+        for (int i = from; i <= to; i++) {
+            if (arr[i]) {
+                bw.write(String.valueOf(i));
+                bw.newLine();
+            }
+        }
 
         br.close();
         bw.close();
     }
+
+
 }
