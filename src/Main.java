@@ -2,42 +2,49 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static boolean[] arr;
+    static int N;
+    static long[][] dp;
+    static long MOD = 1000000000;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(br.readLine());
+        dp = new long[N + 1][10];
 
-        int from = Integer.parseInt(st.nextToken());
-        int to = Integer.parseInt(st.nextToken());
-
-        arr = new boolean[to + 1];
-        Arrays.fill(arr, true);
-
-        arr[1] = false;
-
-        for (int i = 2; i * i <= to; i++) {
-            if (!arr[i]) {
-                continue;
-            }
-
-            for (int j = 2 * i; j <= to; j += i) {
-                arr[j] = false;
-            }
+        //초기화
+        dp[1][0] = 0;
+        for (int i = 1; i < 10; i++) {
+            dp[1][i] = 1;
         }
 
-        for (int i = from; i <= to; i++) {
-            if (arr[i]) {
-                bw.write(String.valueOf(i));
-                bw.newLine();
-            }
+        dp();
+
+
+        //결과 출력
+        long answer = 0;
+        for (int i = 0; i < 10; i++) {
+            answer += dp[N][i];
         }
+
+        bw.write(String.valueOf(answer % MOD));
 
         br.close();
         bw.close();
     }
 
-
+    private static void dp() {
+        for (int i = 2; i <= N; i++) {
+            for (int j = 0; j < 10; j++) {
+                if (j == 0) {
+                    dp[i][j] = dp[i - 1][1] % MOD;
+                } else if (j == 9) {
+                    dp[i][j] = dp[i - 1][8] % MOD;
+                } else {
+                    dp[i][j] = (dp[i - 1][j - 1] + dp[i - 1][j + 1]) % MOD;
+                }
+            }
+        }
+    }
 }
