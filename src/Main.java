@@ -2,96 +2,47 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static char[][] board;
-    static int N = 5;
-    static int answer = 0;
-    static int[] selected;
+    static int N;
+    static boolean[][] board;
     static boolean[] visited;
-    static Queue<Integer> queue;
-    static int[] dx = {1, 0, -1, 0};
-    static int[] dy = {0, 1, 0, -1};
+    static int answer = 0;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        board = new char[N][N];
-        selected = new int[7];
-        visited = new boolean[N * N];
+        N = Integer.parseInt(br.readLine());
+        int num = Integer.parseInt(br.readLine());
 
-        for (int i = 0; i < N; i++) {
-            board[i] = br.readLine().toCharArray();
+        board = new boolean[N + 1][N + 1];
+        visited = new boolean[N + 1];
+
+        for (int i = 0; i < num; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+
+            int from = Integer.parseInt(st.nextToken());
+            int to = Integer.parseInt(st.nextToken());
+
+            board[from][to] = true;
+            board[to][from] = true;
         }
 
-        func(0, 0, 0);
+        dfs(1);
 
-        bw.write(String.valueOf(answer));
+        bw.write(String.valueOf(answer - 1));
 
         br.close();
         bw.close();
     }
 
-    private static void func(int idx, int cnt, int cntS) {
-        if (cnt == 7) {
-            if (cntS >= 4) {
-                if (next()) {
-                    answer++;
-                }
-            }
-            return;
-        }
+    private static void dfs(int idx) {
+        visited[idx] = true;
+        answer++;
 
-        for (int i = idx; i < N * N; i++) {
-            visited[i] = true;
-            selected[cnt] = i;
-
-            int row = i / N;
-            int col = i % N;
-
-            if (board[row][col] == 'S') {
-                func(i + 1, cnt + 1, cntS + 1);
-            } else {
-                func(i + 1, cnt + 1, cntS);
-            }
-            visited[i] = false;
-        }
-    }
-
-    private static boolean next() {
-        queue = new LinkedList<>();
-        boolean[] nextVisited = new boolean[N * N];
-        int cnt = 1;
-        queue.offer(selected[0]);
-
-        while (!queue.isEmpty()) {
-            int cur = queue.poll();
-            nextVisited[cur] = true;
-
-            for (int i = 0; i < dx.length; i++) {
-                int nx = (cur / N) + dx[i];
-                int ny = (cur % N) + dy[i];
-
-                if (nx < 0 || nx >= N || ny < 0 || ny >= N) {
-                    continue;
-                }
-
-                if (!visited[nx * N + ny]) {
-                    continue;
-                }
-
-                if (nextVisited[nx * N + ny]) {
-                    continue;
-                }
-
-                queue.offer(nx * N + ny);
-                nextVisited[nx * N + ny] = true;
-                cnt++;
+        for (int i = 1; i <= N; i++) {
+            if (board[idx][i] && !visited[i]) {
+                dfs(i);
             }
         }
-
-        if (cnt == 7) {
-            return true;
-        }
-        return false;
     }
 }
