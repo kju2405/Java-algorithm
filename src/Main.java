@@ -1,27 +1,22 @@
 import java.io.*;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
-    private static int[] dx = {0, 1, 0, -1};
-    private static int[] dy = {-1, 0, 1, 0};
     private static int[][] board;
     private static boolean[] visited;
+    private static int answer;
+    private static int comNum;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int comNum = Integer.parseInt(br.readLine());
+        comNum = Integer.parseInt(br.readLine());
         int pairNum = Integer.parseInt(br.readLine());
 
         board = new int[comNum + 1][comNum + 1];
         visited = new boolean[comNum + 1];
-
-        ArrayDeque<Integer> queue = new ArrayDeque<>();
-        queue.addLast(1);
-        visited[1] = true;
 
         while (pairNum-- > 0) {
             StringTokenizer st = new StringTokenizer(br.readLine());
@@ -32,22 +27,27 @@ public class Main {
             board[col][row] = 1;
         }
 
-        int ans = 0;
+        dfs(1);
 
-        while (!queue.isEmpty()) {
-            int com = queue.pollFirst();
-            for (int i = 1; i <= comNum; i++) {
-                if (board[com][i] == 1 && !visited[i]) {
-                    queue.addLast(i);
-                    visited[i] = true;
-                    ans++;
-                }
+        for (int i = 1; i <= comNum; i++) {
+            if (visited[i]) {
+                answer++;
             }
         }
 
-        bw.write(String.valueOf(ans));
+        bw.write(String.valueOf(answer - 1));
 
         br.close();
         bw.close();
+    }
+
+    private static void dfs(int idx) {
+        visited[idx] = true;
+
+        for (int i = 1; i <= comNum; i++) {
+            if (board[idx][i] == 1 && !visited[i]) {
+                dfs(i);
+            }
+        }
     }
 }
