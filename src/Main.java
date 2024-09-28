@@ -1,48 +1,53 @@
 import java.io.*;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int N;
-    static boolean[][] board;
-    static boolean[] visited;
-    static int answer = 0;
+    private static int[] dx = {0, 1, 0, -1};
+    private static int[] dy = {-1, 0, 1, 0};
+    private static int[][] board;
+    private static boolean[] visited;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        N = Integer.parseInt(br.readLine());
-        int num = Integer.parseInt(br.readLine());
+        int comNum = Integer.parseInt(br.readLine());
+        int pairNum = Integer.parseInt(br.readLine());
 
-        board = new boolean[N + 1][N + 1];
-        visited = new boolean[N + 1];
+        board = new int[comNum + 1][comNum + 1];
+        visited = new boolean[comNum + 1];
 
-        for (int i = 0; i < num; i++) {
+        ArrayDeque<Integer> queue = new ArrayDeque<>();
+        queue.addLast(1);
+        visited[1] = true;
+
+        while (pairNum-- > 0) {
             StringTokenizer st = new StringTokenizer(br.readLine());
+            int row = Integer.parseInt(st.nextToken());
+            int col = Integer.parseInt(st.nextToken());
 
-            int from = Integer.parseInt(st.nextToken());
-            int to = Integer.parseInt(st.nextToken());
-
-            board[from][to] = true;
-            board[to][from] = true;
+            board[row][col] = 1;
+            board[col][row] = 1;
         }
 
-        dfs(1);
+        int ans = 0;
 
-        bw.write(String.valueOf(answer - 1));
+        while (!queue.isEmpty()) {
+            int com = queue.pollFirst();
+            for (int i = 1; i <= comNum; i++) {
+                if (board[com][i] == 1 && !visited[i]) {
+                    queue.addLast(i);
+                    visited[i] = true;
+                    ans++;
+                }
+            }
+        }
+
+        bw.write(String.valueOf(ans));
 
         br.close();
         bw.close();
-    }
-
-    private static void dfs(int idx) {
-        visited[idx] = true;
-        answer++;
-
-        for (int i = 1; i <= N; i++) {
-            if (board[idx][i] && !visited[i]) {
-                dfs(i);
-            }
-        }
     }
 }
