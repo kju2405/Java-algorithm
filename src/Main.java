@@ -1,21 +1,18 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
     private static List<Integer>[] board;
     private static int[] visited;
-    private static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    private static int N;
     private static int cnt = 1;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
+
+        int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
         int R = Integer.parseInt(st.nextToken());
 
@@ -28,7 +25,6 @@ public class Main {
 
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
-
             int x = Integer.parseInt(st.nextToken());
             int y = Integer.parseInt(st.nextToken());
 
@@ -37,7 +33,7 @@ public class Main {
         }
 
         for (int i = 1; i <= N; i++) {
-            Collections.sort(board[i]);
+            Collections.sort(board[i], Collections.reverseOrder());
         }
 
         dfs(R);
