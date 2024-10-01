@@ -3,59 +3,52 @@ import java.util.*;
 
 public class Main {
 
-    private static boolean[][] board;
-    private static boolean[] visited;
-    private static int from, to;
-    private static int n, k;
-    private static int answer = -1;
+    private static List<Integer>[] board;
+    private static int[] visited;
+    private static int n;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         n = Integer.parseInt(br.readLine());
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        from = Integer.parseInt(st.nextToken());
-        to = Integer.parseInt(st.nextToken());
-        k = Integer.parseInt(br.readLine());
 
-        board = new boolean[n + 1][n + 1];
-        visited = new boolean[n + 1];
+        board = new ArrayList[n + 1];
+        visited = new int[n + 1];
 
-        while (k-- > 0) {
-            st = new StringTokenizer(br.readLine());
+        for (int i = 1; i <= n; i++) {
+            board[i] = new ArrayList<>();
+        }
+
+        for (int i = 0; i < n - 1; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
             int x = Integer.parseInt(st.nextToken());
             int y = Integer.parseInt(st.nextToken());
 
-            board[x][y] = true;
-            board[y][x] = true;
+            board[x].add(y);
+            board[y].add(x);
         }
 
-        dfs(from, 0);
+        dfs(1, 1);
 
-        bw.write(String.valueOf(answer));
+        for (int i = 2; i <= n; i++) {
+            bw.write(String.valueOf(visited[i]));
+            bw.newLine();
+        }
 
         br.close();
         bw.close();
     }
 
-    private static void dfs(int idx, int cnt) {
-        visited[idx] = true;
-
-        if (idx == to) {
-            answer = cnt;
-        }
-
-        if (visited[to]) {
+    private static void dfs(int idx, int parent) {
+        if (visited[idx] != 0) {
             return;
         }
+        visited[idx] = parent;
 
-        for (int i = 1; i <= n; i++) {
-            if (board[idx][i] && !visited[i]) {
-                dfs(i, cnt + 1);
-            }
+        for (int i = 0; i < board[idx].size(); i++) {
+            int num = board[idx].get(i);
+            dfs(num, idx);
         }
-
-        visited[idx] = false;
     }
 }
