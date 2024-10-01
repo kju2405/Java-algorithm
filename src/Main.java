@@ -4,25 +4,25 @@ import java.util.*;
 public class Main {
 
     private static boolean[][] board;
-    private static boolean[] visitedDfs;
-    private static boolean[] visitedBfs;
-    private static int N, M, V;
-
-    private static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    private static boolean[] visited;
+    private static int from, to;
+    private static int n, k;
+    private static int answer = -1;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
+        n = Integer.parseInt(br.readLine());
         StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-        V = Integer.parseInt(st.nextToken());
+        from = Integer.parseInt(st.nextToken());
+        to = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(br.readLine());
 
-        board = new boolean[N + 1][N + 1];
-        visitedBfs = new boolean[N + 1];
-        visitedDfs = new boolean[N + 1];
+        board = new boolean[n + 1][n + 1];
+        visited = new boolean[n + 1];
 
-        while (M-- > 0) {
+        while (k-- > 0) {
             st = new StringTokenizer(br.readLine());
             int x = Integer.parseInt(st.nextToken());
             int y = Integer.parseInt(st.nextToken());
@@ -31,39 +31,31 @@ public class Main {
             board[y][x] = true;
         }
 
-        dfs(V);
-        bw.newLine();
-        bfs(V);
+        dfs(from, 0);
+
+        bw.write(String.valueOf(answer));
 
         br.close();
         bw.close();
     }
 
-    private static void dfs(int idx) throws IOException {
-        bw.write(idx + " ");
-        visitedDfs[idx] = true;
+    private static void dfs(int idx, int cnt) {
+        visited[idx] = true;
 
-        for (int i = 1; i <= N; i++) {
-            if (board[idx][i] && !visitedDfs[i]) {
-                dfs(i);
+        if (idx == to) {
+            answer = cnt;
+        }
+
+        if (visited[to]) {
+            return;
+        }
+
+        for (int i = 1; i <= n; i++) {
+            if (board[idx][i] && !visited[i]) {
+                dfs(i, cnt + 1);
             }
         }
-    }
 
-    private static void bfs(int idx) throws IOException {
-        ArrayDeque<Integer> queue = new ArrayDeque<>();
-        queue.addLast(idx);
-        visitedBfs[idx] = true;
-
-        while (!queue.isEmpty()) {
-            int cur = queue.pollFirst();
-            bw.write(cur + " ");
-            for (int i = 1; i <= N; i++) {
-                if (board[cur][i] && !visitedBfs[i]) {
-                    queue.addLast(i);
-                    visitedBfs[i] = true;
-                }
-            }
-        }
+        visited[idx] = false;
     }
 }
