@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayDeque;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -33,7 +34,7 @@ public class Main {
             for (int i = 0; i < rowSizse; i++) {
                 for (int j = 0; j < colSize; j++) {
                     if (board[i][j] && !visited[i][j]) {
-                        dfs(i, j);
+                        bfs(i, j);
                         answer++;
                     }
                 }
@@ -47,18 +48,36 @@ public class Main {
         bw.close();
     }
 
-    private static void dfs(int row, int col) {
+    private static void bfs(int row, int col) {
+        ArrayDeque<Pair> queue = new ArrayDeque<>();
+        queue.addLast(new Pair(row, col));
         visited[row][col] = true;
 
-        for (int i = 0; i < 4; i++) {
-            int nx = row + dx[i];
-            int ny = col + dy[i];
-            if (nx < 0 || nx >= board.length || ny < 0 || ny >= board[0].length) {
-                continue;
+        while (!queue.isEmpty()) {
+            Pair cur = queue.pollFirst();
+            for (int i = 0; i < 4; i++) {
+                int nx = cur.x + dx[i];
+                int ny = cur.y + dy[i];
+
+                if (nx < 0 || nx >= board.length || ny < 0 || ny >= board[0].length) {
+                    continue;
+                }
+
+                if (board[nx][ny] && !visited[nx][ny]) {
+                    queue.addLast(new Pair(nx, ny));
+                    visited[nx][ny] = true;
+                }
             }
-            if (board[nx][ny] && !visited[nx][ny]) {
-                dfs(nx, ny);
-            }
+        }
+    }
+
+    private static class Pair{
+        int x;
+        int y;
+
+        Pair(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
     }
 }
