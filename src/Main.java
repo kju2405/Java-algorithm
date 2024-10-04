@@ -1,64 +1,84 @@
 import java.io.*;
+import java.util.ArrayDeque;
 import java.util.StringTokenizer;
 
 public class Main {
-
     private static int[][] board;
     private static boolean[][] visited;
-    private static int[] dx = {0, 1, 0, -1};
-    private static int[] dy = {-1, 0, 1, 0};
+    private static int[] dx = {0, 1, 1, 1, 0, -1, -1, -1};
+    private static int[] dy = {-1, -1, 0, 1, 1, 1, 0, -1};
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        while (true) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int colSize = Integer.parseInt(st.nextToken());
+            int rowSize = Integer.parseInt(st.nextToken());
 
-        int rowSize = Integer.parseInt(st.nextToken());
-        int colSize = Integer.parseInt(st.nextToken());
-
-        board = new int[rowSize][colSize];
-        visited = new boolean[rowSize][colSize];
-
-        for (int i = 0; i < rowSize; i++) {
-            char[] arr = br.readLine().toCharArray();
-            for (int j = 0; j < colSize; j++) {
-                board[i][j] = arr[j] - '0';
+            if (rowSize == 0 && colSize == 0) {
+                break;
             }
+
+            board = new int[rowSize][colSize];
+            visited = new boolean[rowSize][colSize];
+
+            for (int i = 0; i < rowSize; i++) {
+                st = new StringTokenizer(br.readLine());
+                for (int j = 0; j < colSize; j++) {
+                    board[i][j] = Integer.parseInt(st.nextToken());
+                }
+            }
+
+            int answer = 0;
+            for (int i = 0; i < rowSize; i++) {
+                for (int j = 0; j < colSize; j++) {
+                    if (board[i][j] == 1 && !visited[i][j]) {
+                        bfs(i, j);
+                        answer++;
+                    }
+                }
+            }
+
+            bw.write(String.valueOf(answer));
+            bw.newLine();
         }
 
-        for (int i = 0; i < colSize; i++) {
-            if (board[0][i] == 0 && !visited[0][i]) {
-                dfs(0, i);
-            }
-        }
-
-        String answer = "NO";
-        for (int i = 0; i < colSize; i++) {
-            if (visited[rowSize - 1][i]) {
-                answer = "YES";
-            }
-        }
-
-        bw.write(answer);
-        bw.close();
         br.close();
+        bw.close();
     }
 
-    private static void dfs(int row, int col) {
-        visited[row][col] = true;
+    private static void bfs(int x, int y) {
+        ArrayDeque<Pair> queue = new ArrayDeque<>();
+        queue.addLast(new Pair(x, y));
+        visited[x][y] = true;
 
-        for (int i = 0; i < 4; i++) {
-            int nx = row + dx[i];
-            int ny = col + dy[i];
+        while (!queue.isEmpty()) {
+            Pair cur = queue.pollFirst();
+            for (int i = 0; i < 8; i++) {
+                int nx = cur.x + dx[i];
+                int ny = cur.y + dy[i];
 
-            if (nx < 0 || nx >= board.length || ny < 0 || ny >= board[0].length) {
-                continue;
+                if (nx < 0 || nx >= board.length || ny < 0 || ny >= board[0].length) {
+                    continue;
+                }
+
+                if (board[nx][ny] == 1 && !visited[nx][ny]) {
+                    queue.addLast(new Pair(nx, ny));
+                    visited[nx][ny] = true;
+                }
             }
+        }
+    }
 
-            if (board[nx][ny] == 0 && !visited[nx][ny]) {
-                dfs(nx, ny);
-            }
+    private static class Pair {
+        int x;
+        int y;
+
+        public Pair(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
     }
 }
