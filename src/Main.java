@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayDeque;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -29,7 +30,7 @@ public class Main {
         for (int i = 0; i < rowSize; i++) {
             for (int j = 0; j < colSize; j++) {
                 if (!visited[i][j]) {
-                    dfs(i, j);
+                    bfs(i, j);
                     answer++;
                 }
             }
@@ -41,31 +42,47 @@ public class Main {
         bw.close();
     }
 
-    private static void dfs(int x, int y) {
+    private static void bfs(int x, int y) {
+        ArrayDeque<Pair> queue = new ArrayDeque<>();
+        queue.addLast(new Pair(x, y));
         visited[x][y] = true;
 
-        if (board[x][y] == '-') {
-            int nx = x + dx[1];
-            int ny = y + dy[1];
+        while (!queue.isEmpty()) {
+            Pair cur = queue.pollFirst();
+            if (board[cur.x][cur.y] == '-') {
+                int nx = cur.x + dx[1];
+                int ny = cur.y + dy[1];
 
-            if (nx >= board.length || ny >= board[0].length) {
-                return;
-            }
+                if (nx >= board.length || ny >= board[0].length) {
+                    return;
+                }
 
-            if (board[nx][ny] == '-' && !visited[nx][ny]) {
-                dfs(nx, ny);
-            }
-        } else {
-            int nx = x + dx[0];
-            int ny = y + dy[0];
+                if (board[nx][ny] == '-' && !visited[nx][ny]) {
+                    queue.addLast(new Pair(nx, ny));
+                    visited[nx][ny] = true;
+                }
+            } else {
+                int nx = cur.x + dx[0];
+                int ny = cur.y + dy[0];
 
-            if (nx >= board.length || ny >= board[0].length) {
-                return;
+                if (nx >= board.length || ny >= board[0].length) {
+                    return;
+                }
+                if (board[nx][ny] == '|' && !visited[nx][ny]) {
+                    queue.addLast(new Pair(nx, ny));
+                    visited[nx][ny] = true;
+                }
             }
+        }
+    }
 
-            if (board[nx][ny] == '|' && !visited[nx][ny]) {
-                dfs(nx, ny);
-            }
+    private static class Pair {
+        int x;
+        int y;
+
+        Pair(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
     }
 }
