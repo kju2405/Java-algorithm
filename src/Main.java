@@ -1,39 +1,47 @@
 import java.io.*;
-import java.util.StringTokenizer;
 
 public class Main {
-    private static int N, M;
-    private static int[] arr;
-    private static boolean[] isused;
-    private static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    private static int N;
+    private static boolean[] rightTop, rightBottom, right, down;
+    private static int answer;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        N = Integer.parseInt(br.readLine());
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-
-        arr = new int[M];
+        rightTop = new boolean[2 * N - 1];
+        rightBottom = new boolean[2 * N - 1];
+        right = new boolean[N];
+        down = new boolean[N];
 
         backtracking(0);
 
-        br.close();
+        bw.write(String.valueOf(answer));
         bw.close();
+        br.close();
     }
 
-    private static void backtracking(int idx) throws IOException {
-        if (idx == M) {
-            for (int i = 0; i < M; i++) {
-                bw.write(arr[i] + " ");
-            }
-            bw.newLine();
+    private static void backtracking(int row) {
+        if (row == N) {
+            answer++;
             return;
         }
 
-        for (int i = 1; i <= N; i++) {
-            arr[idx] = i;
-            backtracking(idx + 1);
+        for (int col = 0; col < N; col++) {
+            if (rightTop[row + col] || rightBottom[(N - 1) + row - col] || right[row] || down[col]) {
+                continue;
+            }
+
+            rightTop[row + col] = true;
+            rightBottom[(N - 1) + row - col] = true;
+            right[row] = true;
+            down[col] = true;
+            backtracking(row + 1);
+            rightTop[row + col] = false;
+            rightBottom[(N - 1) + row - col] = false;
+            right[row] = false;
+            down[col] = false;
         }
     }
 }
