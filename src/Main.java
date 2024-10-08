@@ -1,47 +1,45 @@
 import java.io.*;
+import java.util.StringTokenizer;
 
 public class Main {
-    private static int N;
-    private static boolean[] rightTop, rightBottom, right, down;
-    private static int answer;
+    private static int N, S;
+    private static int[] arr;
+    private static int answer = 0;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        N = Integer.parseInt(br.readLine());
 
-        rightTop = new boolean[2 * N - 1];
-        rightBottom = new boolean[2 * N - 1];
-        right = new boolean[N];
-        down = new boolean[N];
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        S = Integer.parseInt(st.nextToken());
 
-        backtracking(0);
+        arr = new int[N];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+
+        backtracking(0, 0);
+
+        if (S == 0) {
+            answer--;
+        }
 
         bw.write(String.valueOf(answer));
-        bw.close();
+
         br.close();
+        bw.close();
     }
 
-    private static void backtracking(int row) {
-        if (row == N) {
-            answer++;
+    private static void backtracking(int index, int sum) {
+        if (index == N) {
+            if (sum == S) {
+                answer++;
+            }
             return;
         }
-
-        for (int col = 0; col < N; col++) {
-            if (rightTop[row + col] || rightBottom[(N - 1) + row - col] || right[row] || down[col]) {
-                continue;
-            }
-
-            rightTop[row + col] = true;
-            rightBottom[(N - 1) + row - col] = true;
-            right[row] = true;
-            down[col] = true;
-            backtracking(row + 1);
-            rightTop[row + col] = false;
-            rightBottom[(N - 1) + row - col] = false;
-            right[row] = false;
-            down[col] = false;
-        }
+        backtracking(index + 1, sum);
+        backtracking(index + 1, sum + arr[index]);
     }
 }
