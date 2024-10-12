@@ -1,45 +1,30 @@
-import java.io.*;
-import java.util.StringTokenizer;
-
 public class Main {
-    private static int N, S;
-    private static int[] arr;
-    private static int answer = 0;
+    public static void main(String[] args) {
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        String s = "hello";
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        S = Integer.parseInt(st.nextToken());
+        String result = solution(s);
 
-        arr = new int[N];
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < N; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
-        }
-
-        backtracking(0, 0);
-
-        if (S == 0) {
-            answer--;
-        }
-
-        bw.write(String.valueOf(answer));
-
-        br.close();
-        bw.close();
+        System.out.println("result = " + result);
     }
 
-    private static void backtracking(int index, int sum) {
-        if (index == N) {
-            if (sum == S) {
-                answer++;
-            }
-            return;
+    private static String solution(String s) {
+        int size = 'z' - 'a' + 1;
+        int[] alphabet = new int[size];
+        char[] charArray = s.toCharArray();
+        for (char ch : charArray) {
+            int index = ch - 'a';
+            alphabet[index]++;
         }
-        backtracking(index + 1, sum);
-        backtracking(index + 1, sum + arr[index]);
+
+        StringBuffer sb = new StringBuffer();
+        for (int idx = 0; idx < alphabet.length; idx++) {
+            int num = alphabet[idx];
+            while (num-- > 0) {
+                sb.append((char) ('a' + idx));
+            }
+        }
+
+        return sb.toString();
     }
 }
